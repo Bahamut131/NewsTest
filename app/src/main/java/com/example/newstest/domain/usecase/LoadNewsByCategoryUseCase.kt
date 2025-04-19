@@ -4,6 +4,8 @@ import com.example.newstest.domain.repository.NewsRepository
 import javax.inject.Inject
 
 class LoadNewsByCategoryUseCase @Inject constructor(private val repository: NewsRepository) {
-     operator fun invoke(category : String) =
+    fun loadNewsWithCategory(category : String) =
         repository.loadNewsWithCategory(category)
+
+    suspend fun loadNextCategory() = repository.loadNextNewsWithCategory()
 }

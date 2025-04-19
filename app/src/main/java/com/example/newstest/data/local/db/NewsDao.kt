@@ -18,7 +18,7 @@ interface NewsDao {
     suspend fun deleteAllNewsEverything()
 
     @Query("SELECT * FROM NewsEverything WHERE id > :id ORDER BY id ASC LIMIT 10")
-    fun loadNews(id : Int) : Flow<List<NewsEverythingDbModel>>
+    suspend fun loadNews(id : Int) : List<NewsEverythingDbModel>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addNewsCategory(listNewsCategoryDbModel: List<NewsCategoryDbModel>)
@@ -27,6 +27,6 @@ interface NewsDao {
     suspend fun deleteAllNewsCategory()
 
     @Query("SELECT * FROM NewsCategory WHERE id > :id ORDER BY id ASC LIMIT 10")
-    fun loadNewsCategory(id : Int) : Flow<List<NewsCategoryDbModel>>
+    suspend fun loadNewsCategory(id : Int) : List<NewsCategoryDbModel>
 
 }
