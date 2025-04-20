@@ -1,5 +1,7 @@
 package com.example.newstest.presentation.homeScreen
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -22,8 +24,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBar
+import androidx.compose.material3.SearchBarColors
+import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.SearchBarDefaults.InputField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldColors
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
@@ -38,16 +44,24 @@ import androidx.compose.ui.unit.dp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.example.newstest.domain.entity.NewsPost
+import com.example.newstest.ui.theme.BackGroundColor
+import com.example.newstest.ui.theme.CardColor
+import com.example.newstest.ui.theme.SearchColor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeContent(
-    component: HomeComponent
+    component: HomeComponent,
 ){
     val state by component.model.collectAsState()
     SearchBar(
+        colors = SearchBarDefaults.colors(containerColor = BackGroundColor),
         inputField = {
             InputField(
+                modifier = Modifier
+                    .padding(start = 8.dp, end = 8.dp)
+                    .border(width = 1.dp, color = CardColor)
+                    .background(SearchColor),
                 query = state.query,
                 onQueryChange = { component.changeSearchQuery(it) },
                 onSearch = {
@@ -86,7 +100,7 @@ fun HomeContent(
             }
             is HomeStore.State.HomeState.Success -> {
                 LazyColumn {
-                    items(items = searchState.listNewsEverything, key ={it}){
+                    items(items = searchState.listNewsEverything, key ={it.id}){
                         NewsCard(it)
                     }
                     item{
@@ -121,7 +135,8 @@ fun NewsCard(news: NewsPost, modifier: Modifier = Modifier) {
             .fillMaxWidth()
             .padding(8.dp),
         shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(8.dp)
+        elevation = CardDefaults.cardElevation(8.dp),
+        colors = CardDefaults.cardColors().copy(containerColor = CardColor)
     ) {
         Column(
             modifier = Modifier

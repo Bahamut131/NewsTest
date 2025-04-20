@@ -3,6 +3,7 @@ package com.example.newstest.presentation.rootComponent
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
+import com.arkivanov.decompose.router.stack.bringToFront
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.push
@@ -59,11 +60,11 @@ class DefaultRootComponent @AssistedInject constructor(
 
 
     fun navigateToHome() {
-        navigation.push(Config.HomeScreenConfig)
+        navigation.bringToFront(Config.HomeScreenConfig)
     }
 
     fun navigateToCategory() {
-        navigation.push(Config.CategoryScreenConfig)
+        navigation.bringToFront(Config.CategoryScreenConfig)
     }
 
     @Serializable

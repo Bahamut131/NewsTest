@@ -1,5 +1,6 @@
 package com.example.newstest.presentation.rootComponent
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -13,10 +14,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import com.arkivanov.decompose.extensions.compose.stack.Children
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.example.newstest.presentation.categoryScreen.CategoryContent
 import com.example.newstest.presentation.homeScreen.HomeContent
+import com.example.newstest.ui.theme.BottomBar
 import com.example.newstest.ui.theme.NewsTestTheme
 
 @Composable
@@ -29,7 +32,9 @@ fun RootContent(
     NewsTestTheme {
         Scaffold (
             bottomBar = {
-                NavigationBar {
+                NavigationBar(
+                    containerColor = BottomBar
+                ) {
                     NavigationBarItem(
                         selected = currentChild is RootComponent.Child.HomeComponentContent,
                         onClick = { component.navigateToHome() },

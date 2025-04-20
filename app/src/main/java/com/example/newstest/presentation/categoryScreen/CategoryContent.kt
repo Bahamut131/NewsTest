@@ -1,8 +1,10 @@
 package com.example.newstest.presentation.categoryScreen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -35,56 +37,66 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.newstest.presentation.categoryScreen.category.CategoryName
 import com.example.newstest.presentation.homeScreen.NewsCard
+import com.example.newstest.ui.theme.BackGroundColor
+import com.example.newstest.ui.theme.CardColor
+import com.example.newstest.ui.theme.SearchColor
 
 @Composable
 fun CategoryContent(
     component: CategoryComponent
 ){
     val state by component.model.collectAsState()
-
-    CategoryDropdown(categories = CategoryName.entries.map { it.category }) {
-        component.loadNewsByCategory(it)
-    }
-
-    when(val category =state.categoryState){
-        CategoryStore.State.CategoryState.Error -> {
-            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
-                Text("Something do wrong :(")
-            }
+    Column(
+        modifier = Modifier.background(BackGroundColor)
+    ) {
+        CategoryDropdown(categories = CategoryName.entries.map { it.category }) {
+            component.loadNewsByCategory(it)
         }
-        CategoryStore.State.CategoryState.Initial -> {
-
-        }
-        CategoryStore.State.CategoryState.Loading -> {
-            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
-                CircularProgressIndicator()
-            }
-        }
-        is CategoryStore.State.CategoryState.Success -> {
-            LazyColumn {
-                items(items = category.listNewsCategory, key ={it}){
-                    NewsCard(it)
+        when(val category =state.categoryState){
+            CategoryStore.State.CategoryState.Error -> {
+                Box(Modifier.fillMaxSize().background(BackGroundColor), contentAlignment = Alignment.Center){
+                    Text("Something do wrong :(")
                 }
-                item{
-                    if(category.isLoadNext){
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .wrapContentHeight()
-                                .padding(16.dp),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            CircularProgressIndicator()
-                        }
-                    }else{
-                        SideEffect {
-                            component.loadCategoryNext()
+            }
+            CategoryStore.State.CategoryState.Initial -> {
+                Box(Modifier.fillMaxSize().background(BackGroundColor), contentAlignment = Alignment.Center){
+
+                }
+            }
+            CategoryStore.State.CategoryState.Loading -> {
+                Box(Modifier.fillMaxSize().background(BackGroundColor), contentAlignment = Alignment.Center){
+                    CircularProgressIndicator()
+                }
+            }
+            is CategoryStore.State.CategoryState.Success -> {
+                LazyColumn(modifier = Modifier.background(BackGroundColor)) {
+                    items(items = category.listNewsCategory, key ={it.id}){
+                        NewsCard(it)
+                    }
+                    item{
+                        if(category.isLoadNext){
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .wrapContentHeight()
+                                    .padding(16.dp),
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                CircularProgressIndicator()
+                            }
+                        }else{
+                            SideEffect {
+                                component.loadCategoryNext()
+                            }
                         }
                     }
                 }
             }
         }
     }
+
+
+
 
 }
 
@@ -97,11 +109,11 @@ private fun CategoryDropdown(
     var expanded by remember { mutableStateOf(false) }
     var selectedCategory by remember { mutableStateOf(categories.firstOrNull() ?: "") }
 
-    Box(modifier = modifier) {
+    Box(modifier = modifier.background(SearchColor)) {
         Row(
             modifier = Modifier
                 .clip(RoundedCornerShape(10.dp))
-                .background(Color(0xFFE0E0E0))
+                .background(SearchColor)
                 .clickable { expanded = !expanded }
                 .padding(horizontal = 16.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically
@@ -109,7 +121,7 @@ private fun CategoryDropdown(
             Text(
                 text = selectedCategory,
                 style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Medium),
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.fillMaxWidth().weight(1f)
             )
             Icon(
                 imageVector = if (expanded) Icons.Default.ArrowDropUp else Icons.Default.ArrowDropDown,
@@ -121,7 +133,9 @@ private fun CategoryDropdown(
             expanded = expanded,
             onDismissRequest = { expanded = false },
             modifier = Modifier
-                .background(Color.White)
+                .fillMaxWidth()
+                .background(SearchColor)
+                .border(1.dp, CardColor)
                 .clip(RoundedCornerShape(8.dp))
         ) {
             categories.forEach { category ->

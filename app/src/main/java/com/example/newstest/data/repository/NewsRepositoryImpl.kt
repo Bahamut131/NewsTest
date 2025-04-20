@@ -1,5 +1,6 @@
 package com.example.newstest.data.repository
 
+import android.util.Log
 import com.example.newstest.data.local.db.NewsDao
 import com.example.newstest.data.mapper.replaceSpaceWithPlus
 import com.example.newstest.data.mapper.toNewsEverything
@@ -27,16 +28,24 @@ class NewsRepositoryImpl @Inject constructor(
     private val nextEverything = MutableSharedFlow<Unit>(replay = 1)
 
     override fun loadNews(query: String): Flow<List<NewsPost>> = flow {
+        Log.d("NewsRepositoryImpl","Start work")
         if (oldQueryEverything.isBlank() || oldQueryEverything != query) {
+            Log.d("NewsRepositoryImpl","Do remove")
             newsDao.deleteAllNewsEverything()
             _listNewsEverything.removeAll(_listNewsEverything)
             lastIdNewsEverything = 0
+            Log.d("NewsRepositoryImpl","Get response")
+            try {
+                val response = apiService
+                    .loadEverythingNews(query.replaceSpaceWithPlus())
+                    .articles.map { it.toNewsEverything() }
 
-            val response = apiService
-                .loadEverythingNews(query.replaceSpaceWithPlus()).articles.map { it.toNewsEverything() }
-
-            newsDao.addNewsEverything(response)
-            oldQueryEverything = query
+                Log.d("NewsRepositoryImpl", "response = $response")
+                newsDao.addNewsEverything(response)
+                oldQueryEverything = query
+            } catch (e: Exception) {
+                Log.e("NewsRepositoryImpl", "Exception while loading news: ${e.message}", e)
+            }
         }
 
         nextEverything.emit(Unit)
