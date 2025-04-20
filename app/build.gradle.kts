@@ -2,6 +2,9 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.serialization)
 }
 
 android {
@@ -40,6 +43,30 @@ android {
 }
 
 dependencies {
+
+    implementation(libs.okHttp.interceptor)
+    implementation(libs.okHttp.core)
+
+    implementation(libs.icons)
+
+    implementation(libs.retrofit.core)
+    implementation(libs.retrofit.converter)
+
+    implementation(libs.glide.compose)
+
+    implementation(libs.dagger.core)
+    ksp(libs.dagger.compiler)
+
+    implementation(libs.room.core)
+    ksp(libs.room.compiler)
+
+    implementation(libs.decompose.core)
+    implementation(libs.decompose.extension)
+
+    implementation(libs.mvikotlin.core)
+    implementation(libs.mvikotlin.main)
+    implementation(libs.mvikotlin.coroutine)
+
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
