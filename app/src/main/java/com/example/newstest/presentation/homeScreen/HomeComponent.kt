@@ -6,7 +6,9 @@ interface HomeComponent {
 
     val model : StateFlow<HomeStore.State>
 
-    fun loadNewsByCategory(category : String)
-    fun loadCategoryNext()
+    fun changeSearchQuery(query : String)
+    fun loadNewsNext()
+    fun onClickSearchNews()
+    fun onClickBack()
 
 }
