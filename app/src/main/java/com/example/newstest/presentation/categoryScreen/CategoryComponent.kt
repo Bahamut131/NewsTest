@@ -8,5 +8,6 @@ interface CategoryComponent {
 
     fun loadNewsByCategory(category : String)
     fun loadCategoryNext()
-
+    fun onClickSearchNews()
+    fun onClickBack()
 }
