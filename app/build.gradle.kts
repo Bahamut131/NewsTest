@@ -19,6 +19,9 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        val key = property("apiKey")?.toString() ?: error("You need to add apiKey in gradle.properties")
+        buildConfigField("String","NEWS_API_KEY","\"${key}\"")
     }
 
     buildTypes {
@@ -39,6 +42,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 

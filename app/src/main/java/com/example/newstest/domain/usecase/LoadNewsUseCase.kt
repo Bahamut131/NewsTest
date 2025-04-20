@@ -5,6 +5,7 @@ import javax.inject.Inject
 
 class LoadNewsUseCase @Inject constructor(private val repository: NewsRepository) {
 
-    operator fun invoke(query : String) = repository.loadNews(query)
+    fun loadNews(query : String) = repository.loadNews(query)
+    suspend fun loadNextNews() = repository.loadNextNews()
 
 }
