@@ -11,6 +11,7 @@ import com.example.newstest.presentation.categoryScreen.CategoryStore.Intent
 import com.example.newstest.presentation.categoryScreen.CategoryStore.Label
 import com.example.newstest.presentation.categoryScreen.CategoryStore.State
 import com.example.newstest.presentation.categoryScreen.CategoryStore.State.CategoryState
+import jakarta.inject.Inject
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
@@ -46,7 +47,7 @@ interface CategoryStore : Store<Intent, State, Label> {
     }
 }
 
-class CategoryStoreFactory(
+class CategoryStoreFactory @Inject constructor(
     private val storeFactory: StoreFactory,
     private val loadNewsByCategoryUseCase: LoadNewsByCategoryUseCase
 ) {
