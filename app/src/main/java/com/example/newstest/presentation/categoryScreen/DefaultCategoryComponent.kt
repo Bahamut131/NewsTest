@@ -44,9 +44,6 @@ class DefaultCategoryComponent @AssistedInject constructor(
         state.accept(CategoryStore.Intent.OnBackClick)
     }
 
-    override fun onClickSearchNews() {
-        state.accept(CategoryStore.Intent.OnSearchClick)
-    }
 
     @AssistedFactory
     interface Factory{

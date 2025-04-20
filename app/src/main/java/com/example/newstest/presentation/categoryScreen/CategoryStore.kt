@@ -20,8 +20,6 @@ interface CategoryStore : Store<Intent, State, Label> {
     sealed interface Intent {
         data class ChangeCategory(val category : String) : Intent
 
-        data object OnSearchClick : Intent
-
         data object OnBackClick : Intent
 
         data object LoadNextNews : Intent
@@ -85,25 +83,10 @@ class CategoryStoreFactory @Inject constructor(
         override fun executeIntent(intent: Intent, getState: () -> State) {
             when(intent){
                 is Intent.ChangeCategory -> {
-                    dispatch(Msg.ChangeCategory(intent.category))
-                }
-                Intent.LoadNextNews -> {
-                    scope.launch {
-                        try {
-                            loadNewsByCategoryUseCase.loadNextCategory()
-                            dispatch(Msg.IsLoadNext)
-                        }catch (_ : Exception){
-                            dispatch(Msg.Error)
-                        }
-                    }
-                }
-                Intent.OnBackClick -> {
-                    publish(Label.OnBackClick)
-                }
-                Intent.OnSearchClick -> {
                     searchJob?.cancel()
                     searchJob = scope.launch {
                         try {
+                            dispatch(Msg.ChangeCategory(intent.category))
                             dispatch(Msg.Loading)
                             loadNewsByCategoryUseCase.loadNewsWithCategory(getState.invoke().category).collect {
                                 dispatch(Msg.Success(it,false))
@@ -113,6 +96,20 @@ class CategoryStoreFactory @Inject constructor(
                         }
                     }
                 }
+                Intent.LoadNextNews -> {
+                    scope.launch {
+                        try {
+                            dispatch(Msg.IsLoadNext)
+                            loadNewsByCategoryUseCase.loadNextCategory()
+                        }catch (_ : Exception){
+                            dispatch(Msg.Error)
+                        }
+                    }
+                }
+                Intent.OnBackClick -> {
+                    publish(Label.OnBackClick)
+                }
+
             }
         }
 

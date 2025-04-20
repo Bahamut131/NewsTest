@@ -1,5 +1,6 @@
 package com.example.newstest.presentation.homeScreen
 
+import android.util.Log
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
@@ -97,8 +98,11 @@ class HomeStoreFactory @Inject constructor(
                     searchJob?.cancel()
                     searchJob = scope.launch {
                         try {
+                            Log.d("HomeStoreFactory","Loading")
                             dispatch(Loading)
+                            Log.d("HomeStoreFactory","query = ${getState.invoke().query}")
                             loadNewsUseCase.loadNews(getState.invoke().query).collect {
+                                Log.d("HomeStoreFactory","$it")
                                 dispatch(Success(it,false))
                             }
                         }catch (_ : Exception){
@@ -110,6 +114,7 @@ class HomeStoreFactory @Inject constructor(
                 Intent.LoadNextNews -> {
                     scope.launch {
                         try {
+                            dispatch(IsLoadNext)
                             loadNewsUseCase.loadNextNews()
                         }catch (_ : Exception){
                             dispatch(Error)

@@ -8,12 +8,12 @@ import retrofit2.http.Query
 interface ApiService {
 
     @GET("everything")
-    fun loadEverythingNews(
+    suspend fun loadEverythingNews(
         @Query("q") query: String
     ) : NewsResponse
 
     @GET("top-headlines")
-    fun loadCategoryNews(
+    suspend fun loadCategoryNews(
         @Query("category") category: String
     ) : NewsResponse
 
