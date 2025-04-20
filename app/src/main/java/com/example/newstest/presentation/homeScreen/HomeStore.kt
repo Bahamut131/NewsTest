@@ -12,6 +12,7 @@ import com.example.newstest.presentation.homeScreen.HomeStore.Label
 import com.example.newstest.presentation.homeScreen.HomeStore.State
 import com.example.newstest.presentation.homeScreen.HomeStore.State.HomeState
 import com.example.newstest.presentation.homeScreen.HomeStoreFactory.Msg.*
+import jakarta.inject.Inject
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.lang.Exception
@@ -52,7 +53,7 @@ interface HomeStore : Store<Intent, State, Label> {
     }
 }
 
-class HomeStoreFactory(
+class HomeStoreFactory @Inject constructor(
     private val storeFactory: StoreFactory,
     private val loadNewsUseCase: LoadNewsUseCase
 ) {

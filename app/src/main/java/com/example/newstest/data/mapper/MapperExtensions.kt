@@ -54,12 +54,7 @@ fun NewsEverythingDbModel.toEntity() = NewsPost(
     content = this.content
 )
 
-fun List<NewsEverythingDbModel>.toEntityList() : List<NewsPost>{
-    return this.map { it.toEntity() }
-}
-
-
-fun List<NewsPost>.toDbModelList() : List<NewsEverythingDbModel>{
+fun List<NewsEverythingDbModel>.toEntityListFromEverything() : List<NewsPost>{
     return this.map { it.toEntity() }
 }
 
@@ -76,6 +71,8 @@ fun NewsCategoryDbModel.toEntity() = NewsPost(
     content = this.content
 )
 
-fun List<NewsCategoryDbModel>.toEntityList() : List<NewsPost>{
+fun List<NewsCategoryDbModel>.toEntityListFromCategory() : List<NewsPost>{
     return this.map { it.toEntity() }
 }
+
+fun String.replaceSpaceWithPlus() : String = this.replace(" ","+")

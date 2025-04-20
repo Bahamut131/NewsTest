@@ -1,8 +1,10 @@
 package com.example.newstest.data.repository
 
 import com.example.newstest.data.local.db.NewsDao
+import com.example.newstest.data.mapper.replaceSpaceWithPlus
 import com.example.newstest.data.mapper.toNewsEverything
-import com.example.newstest.data.mapper.toEntityList
+import com.example.newstest.data.mapper.toEntityListFromCategory
+import com.example.newstest.data.mapper.toEntityListFromEverything
 import com.example.newstest.data.mapper.toNewsCategory
 import com.example.newstest.data.remote.ApiService
 import com.example.newstest.domain.entity.NewsPost
@@ -31,7 +33,7 @@ class NewsRepositoryImpl @Inject constructor(
             lastIdNewsEverything = 0
 
             val response = apiService
-                .loadEverythingNews(query).articles.map { it.toNewsEverything() }
+                .loadEverythingNews(query.replaceSpaceWithPlus()).articles.map { it.toNewsEverything() }
 
             newsDao.addNewsEverything(response)
             oldQueryEverything = query
@@ -41,7 +43,7 @@ class NewsRepositoryImpl @Inject constructor(
         nextEverything.collect {
             newsDao.loadNews(lastIdNewsEverything.takeIf { it != 0 } ?: 0).also {
                 lastIdNewsEverything = it.last().id
-                _listNewsEverything.addAll(it.toEntityList())
+                _listNewsEverything.addAll(it.toEntityListFromEverything())
                 emit(listNewsEverything)
             }
         }
@@ -66,7 +68,7 @@ class NewsRepositoryImpl @Inject constructor(
             lastIdNewsCategory = 0
 
             val response = apiService
-                .loadCategoryNews(category).articles.map { it.toNewsCategory() }
+                .loadCategoryNews(category.replaceSpaceWithPlus()).articles.map { it.toNewsCategory() }
 
             newsDao.addNewsCategory(response)
             oldQueryCategory = category
@@ -76,7 +78,7 @@ class NewsRepositoryImpl @Inject constructor(
         nextCategory.collect {
             newsDao.loadNewsCategory(lastIdNewsCategory.takeIf { it != 0 } ?: 0).also {
                 lastIdNewsCategory = it.last().id
-                _listNewsCategory.addAll(it.toEntityList())
+                _listNewsCategory.addAll(it.toEntityListFromCategory())
                 emit(listNewsCategory)
             }
         }

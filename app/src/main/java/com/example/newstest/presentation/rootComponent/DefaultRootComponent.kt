@@ -12,13 +12,15 @@ import com.example.newstest.presentation.homeScreen.DefaultHomeComponent
 import com.example.newstest.presentation.rootComponent.RootComponent.Child
 import com.example.newstest.presentation.rootComponent.RootComponent.Child.CategoryComponentContent
 import com.example.newstest.presentation.rootComponent.RootComponent.Child.HomeComponentContent
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.serialization.Serializable
 
 class DefaultRootComponent @AssistedInject constructor(
     private val defaultHomeComponent: DefaultHomeComponent.Factory,
     private val defaultCategoryComponent: DefaultCategoryComponent.Factory,
-    private val componentContext: ComponentContext
+    @Assisted("componentContext")private val componentContext: ComponentContext
 ) : RootComponent, ComponentContext by componentContext{
 
     private val navigation = StackNavigation<Config>()
@@ -65,8 +67,15 @@ class DefaultRootComponent @AssistedInject constructor(
     }
 
     @Serializable
-    sealed interface Config{
+    private sealed interface Config{
         data object HomeScreenConfig : Config
         data object CategoryScreenConfig : Config
+    }
+
+    @AssistedFactory
+    interface Factory{
+        fun create(
+            @Assisted("componentContext") componentContext: ComponentContext
+        ) : DefaultRootComponent
     }
 }
