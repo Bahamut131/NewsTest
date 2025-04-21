@@ -24,12 +24,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBar
-import androidx.compose.material3.SearchBarColors
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.SearchBarDefaults.InputField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldColors
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
@@ -98,7 +95,13 @@ fun HomeContent(
                     CircularProgressIndicator()
                 }
             }
+
             is HomeStore.State.HomeState.Success -> {
+                if(searchState.listNewsEverything.isEmpty()){
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
+                        Text("Not found any news by query")
+                    }
+                }
                 LazyColumn {
                     items(items = searchState.listNewsEverything, key ={it.id}){
                         NewsCard(it)
@@ -122,6 +125,8 @@ fun HomeContent(
                     }
                 }
             }
+
+
         }
     }
 

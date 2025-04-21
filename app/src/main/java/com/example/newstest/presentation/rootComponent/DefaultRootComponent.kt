@@ -6,7 +6,6 @@ import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.bringToFront
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pop
-import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.decompose.value.Value
 import com.example.newstest.presentation.categoryScreen.DefaultCategoryComponent
 import com.example.newstest.presentation.homeScreen.DefaultHomeComponent
