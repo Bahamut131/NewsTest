@@ -1,6 +1,5 @@
 package com.example.newstest.presentation.homeScreen
 
-import android.util.Log
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
@@ -12,11 +11,15 @@ import com.example.newstest.presentation.homeScreen.HomeStore.Intent
 import com.example.newstest.presentation.homeScreen.HomeStore.Label
 import com.example.newstest.presentation.homeScreen.HomeStore.State
 import com.example.newstest.presentation.homeScreen.HomeStore.State.HomeState
-import com.example.newstest.presentation.homeScreen.HomeStoreFactory.Msg.*
+import com.example.newstest.presentation.homeScreen.HomeStoreFactory.Msg.ChangeSearchQuery
+import com.example.newstest.presentation.homeScreen.HomeStoreFactory.Msg.EmptyList
+import com.example.newstest.presentation.homeScreen.HomeStoreFactory.Msg.Error
+import com.example.newstest.presentation.homeScreen.HomeStoreFactory.Msg.IsLoadNext
+import com.example.newstest.presentation.homeScreen.HomeStoreFactory.Msg.Loading
+import com.example.newstest.presentation.homeScreen.HomeStoreFactory.Msg.Success
 import jakarta.inject.Inject
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import java.lang.Exception
 
 interface HomeStore : Store<Intent, State, Label> {
 
@@ -68,12 +71,12 @@ class HomeStoreFactory @Inject constructor(
             reducer = ReducerImpl
         ) {}
 
-    private sealed interface Action {
-    }
+    private sealed interface Action
 
     private sealed interface Msg {
         data class ChangeSearchQuery(val query: String) : Msg
         data object Error: Msg
+        data class  EmptyList(val listNewsEverything : List<NewsPost>, val isLoadNext: Boolean): Msg
         data object Loading: Msg
         data object IsLoadNext : Msg
         data class Success(val listNewsEverything : List<NewsPost>, val isLoadNext: Boolean): Msg
@@ -98,12 +101,14 @@ class HomeStoreFactory @Inject constructor(
                     searchJob?.cancel()
                     searchJob = scope.launch {
                         try {
-                            Log.d("HomeStoreFactory","Loading")
                             dispatch(Loading)
-                            Log.d("HomeStoreFactory","query = ${getState.invoke().query}")
                             loadNewsUseCase.loadNews(getState.invoke().query).collect {
-                                Log.d("HomeStoreFactory","$it")
-                                dispatch(Success(it,false))
+                                if(it.isEmpty()){
+                                    dispatch(EmptyList(emptyList(),false))
+                                }else{
+                                    dispatch(Success(it,false))
+                                }
+
                             }
                         }catch (_ : Exception){
                             dispatch(Error)
@@ -146,6 +151,10 @@ class HomeStoreFactory @Inject constructor(
 
                 IsLoadNext -> {
                     copy(isLoadNext = true)
+                }
+
+                is EmptyList -> {
+                    copy(homeState = HomeState.Success(message.listNewsEverything,false))
                 }
             }
     }

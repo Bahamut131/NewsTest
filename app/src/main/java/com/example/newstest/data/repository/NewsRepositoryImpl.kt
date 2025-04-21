@@ -28,19 +28,15 @@ class NewsRepositoryImpl @Inject constructor(
     private val nextEverything = MutableSharedFlow<Unit>(replay = 1)
 
     override fun loadNews(query: String): Flow<List<NewsPost>> = flow {
-        Log.d("NewsRepositoryImpl","Start work")
         if (oldQueryEverything.isBlank() || oldQueryEverything != query) {
-            Log.d("NewsRepositoryImpl","Do remove")
             newsDao.deleteAllNewsEverything()
             _listNewsEverything.removeAll(_listNewsEverything)
             lastIdNewsEverything = 0
-            Log.d("NewsRepositoryImpl","Get response")
             try {
                 val response = apiService
                     .loadEverythingNews(query.replaceSpaceWithPlus())
                     .articles.map { it.toNewsEverything() }
 
-                Log.d("NewsRepositoryImpl", "response = $response")
                 newsDao.addNewsEverything(response)
                 oldQueryEverything = query
             } catch (e: Exception) {
@@ -50,13 +46,15 @@ class NewsRepositoryImpl @Inject constructor(
 
         nextEverything.emit(Unit)
         nextEverything.collect {
-            newsDao.loadNews(lastIdNewsEverything.takeIf { it != 0 } ?: 0).also {
-                lastIdNewsEverything = it.last().id
-                _listNewsEverything.addAll(it.toEntityListFromEverything())
-                emit(listNewsEverything)
-            }
-        }
+            val news = newsDao.loadNews(lastIdNewsEverything.takeIf { it != 0 } ?: 0)
 
+            if (news.isNotEmpty()) {
+                lastIdNewsEverything = news.last().id
+                _listNewsEverything.addAll(news.toEntityListFromEverything())
+            }
+
+            emit(listNewsEverything)
+        }
     }
 
     override suspend fun loadNextNews() {
