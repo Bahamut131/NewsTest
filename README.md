@@ -29,4 +29,5 @@ Meta
 - [x] робота з декількома ремоут запитами<
 - [x] робота з локальними базами даних (додатково).
 
-
+FOR WORKING PROJECT YOU NEED ADD apiKey IN GRADLE PROPERTIES FROM WEBSITE https://newsapi.org/
+-
